@@ -1,6 +1,6 @@
 version: 2
 web_addr: localhost:4040
-authtoken: 2VGPgS4FynJfeHYm7AuX3_2Ek59Adq7vn297Vxj7bTZ
+authtoken: ${NGROK_AUTH_TOKEN}
 tunnels:
   loadbalancer1:
     addr: loadbalancer1:80
