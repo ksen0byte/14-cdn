@@ -1,0 +1,77 @@
+version: '3'
+
+services:
+  node1:
+    image: nginx:alpine
+    volumes:
+      - ./node/html/index1.html:/usr/share/nginx/html/index.html:ro
+      - ./node/images:/usr/share/nginx/html/images:ro
+    ports:
+      - "8081:80"
+
+  node2:
+    image: nginx:alpine
+    volumes:
+      - ./node/html/index2.html:/usr/share/nginx/html/index.html:ro
+      - ./node/images:/usr/share/nginx/html/images:ro
+    ports:
+      - "8082:80"
+
+  node3:
+    image: nginx:alpine
+    volumes:
+      - ./node/html/index3.html:/usr/share/nginx/html/index.html:ro
+      - ./node/images:/usr/share/nginx/html/images:ro
+    ports:
+      - "8083:80"
+
+  node4:
+    image: nginx:alpine
+    volumes:
+      - ./node/html/index4.html:/usr/share/nginx/html/index.html:ro
+      - ./node/images:/usr/share/nginx/html/images:ro
+    ports:
+      - "8084:80"
+
+  bind:
+    image: sameersbn/bind
+    ports:
+      - "53:53"
+      - "53:53/udp"
+    volumes:
+      - ./bind/named.conf:/data/bind/etc/named.conf
+      - ./bind/db.localtest.com:/data/bind/etc/db.localtest.com
+
+  loadbalancer1:
+    image: haproxy:alpine
+    volumes:
+      - ./loadbalancer/haproxy1.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+    ports:
+      - "81:80"
+
+  loadbalancer2:
+    image: haproxy:alpine
+    volumes:
+      - ./loadbalancer/haproxy2.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+    ports:
+      - "82:80"
+
+  ngrok:
+    image: ngrok/ngrok:latest
+    restart: unless-stopped
+    command:
+      - "start"
+      - "--all"
+      - "--config"
+      - "/etc/ngrok.yml"
+    volumes:
+      - ./ngrok/ngrok.yml:/etc/ngrok.yml
+    ports:
+      - 4040:4040
+
+  redirect-server:
+    image: nginx:alpine
+    volumes:
+      - ./redirect/nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - "80:80"
